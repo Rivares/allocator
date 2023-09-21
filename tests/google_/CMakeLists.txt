@@ -9,7 +9,7 @@ set(SOURCES
 
 add_executable(${package_name} ${SOURCES})
 
-set_target_properties(ip_filter PROPERTIES
+set_target_properties(allocator PROPERTIES
     CXX_STANDARD 17
     CXX_STANDARD_REQUIRED ON
 )

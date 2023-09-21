@@ -51,14 +51,14 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: ./ip_filter-0.0.${{ github.run_number }}-Linux.deb
-          asset_name: ip_filter-0.0.${{ github.run_number }}-Linux.deb
+          asset_path: ./allocator-0.0.${{ github.run_number }}-Linux.deb
+          asset_name: allocator-0.0.${{ github.run_number }}-Linux.deb
           asset_content_type: application/vnd.debian.binary-package
       - name: Upload deb package for job_run
         uses: actions/upload-artifact@v3
         with:
           name: package
-          path: ./ip_filter-0.0.${{ github.run_number }}-Linux.deb
+          path: ./allocator-0.0.${{ github.run_number }}-Linux.deb
   job_run:
     needs: [job_build]
     runs-on: ubuntu-latest
@@ -69,8 +69,8 @@ jobs:
           name: package
       - shell: bash
         run: |
-          sudo apt install ./ip_filter-0.0.${{ github.run_number }}-Linux.deb
+          sudo apt install ./allocator-0.0.${{ github.run_number }}-Linux.deb
       - name: Checking
         run: |
-          sudo cat ip_filter | md5sum
+          sudo cat allocator | md5sum
 
