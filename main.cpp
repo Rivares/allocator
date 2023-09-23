@@ -32,6 +32,7 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[])
 
 
 
+
     //    - создание экземпляра std::map<int, int>
     std::map<int, int, std::less<int>, Allocator<std::pair<const int, int> >> test_1;
 
@@ -51,11 +52,19 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[])
 
 
     //    - создание экземпляра своего контейнера для хранения значений типа int
+    better_container<int, std::less<int>, Allocator<int>> test_3;
+
     //    - заполнение 10 элементами от 0 до 9
-    //    - создание экземпляра своего контейнера для хранения значений типа int с новым аллокатором,
-    //    ограниченным 10 элементами
-    //    - заполнение 10 элементами от 0 до 9
-    //    - вывод на экран всех значений, хранящихся в контейнере
+    cnt = 10;
+    while (cnt-- > 0)
+    {
+        test_3.push_back(factorial(cnt));
+    }
+
+    //    - вывод на экран всех значений хранящихся в контейнере
+    test_3.printAllElems(); // ERROR...
+
+
 
     return 0;
 }
