@@ -59,7 +59,7 @@ public:
 
         if ((currCnt + 1) < maxSize)
         {
-            if (auto ptr = static_cast<T*>( std::malloc(cnt * sizeof(T)) )) // ::operator new(cnt * sizeof(T))
+            if (auto ptr = static_cast<pointer>( std::malloc(cnt * sizeof(T)) )) // ::operator new(cnt * sizeof(T))
             {
                 report(ptr, cnt);
                 ++currCnt;
@@ -189,6 +189,7 @@ constexpr bool operator != (const Allocator<T>&, const Allocator<U>&) noexcept
 
 
 template<typename T,
+         int capacity,
          typename Comp,
          typename Allocator = std::allocator<T> >
 class better_container
@@ -203,10 +204,11 @@ public:
 
     better_container() noexcept
     {
-        capacity = 11;
         typename Allocator::template rebind<T>::other allocBlock;
         allocBlock.setLimitElems(capacity);
         data = allocBlock.allocate(capacity);
+
+//        std::cout << "Alloc Data B: " << &(*data) << " Alloc Data B: " << &(*(data + capacity)) << "\n";
     }
     better_container(const better_container& other) noexcept
     {}
@@ -214,29 +216,37 @@ public:
     {
     }
 
-    void push_back(const_reference item)
+    bool set(size_t idx, const_reference item)
     {
-        typename Allocator::template rebind<T>::other allocBlock;
-        allocBlock.construct(data, item);
+        if (idx >= capacity)
+        {
+            throw std::out_of_range("better_container<T>::set() : index is out of range");
+            return false;
+        }
 
-        std::cout << "Data: " << *data << "\n";
+        typename Allocator::template rebind<T>::other allocBlock;
+        allocBlock.construct(data + idx, item);
+
+//        std::cout << "Address: " << &(*(data + idx)) << " Data: " << *(data + idx) << "\n";
 
         ++size;
+        if (size == capacity)
+        {   return false;   }
+
+        return true;
     }
 
     void printAllElems()
     {
         for (std::size_t i = 0; i < size; ++i)
         {
-            std::cout << *data << "\n";
-            --data;
+            std::cout << *data++ << "\n";
         }
     }
 
 
 private:
     std::size_t size = 0;
-    std::size_t capacity = 0;
     pointer data = nullptr;
 };
 

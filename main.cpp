@@ -13,6 +13,19 @@
     return factorial;
 }
 
+template<int num>
+struct fact
+{
+    static const int value = num * fact<num - 1>::value;
+};
+
+template<>
+struct fact<0>
+{
+    static const int value = 1;
+};
+
+
 int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[])
 {
     uint8_t cnt = 10;
@@ -52,17 +65,15 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[])
 
 
     //    - создание экземпляра своего контейнера для хранения значений типа int
-    better_container<int, std::less<int>, Allocator<int>> test_3;
+    better_container<int, 10, std::less<int>, Allocator<int>> test_3;
 
     //    - заполнение 10 элементами от 0 до 9
-    cnt = 10;
-    while (cnt-- > 0)
-    {
-        test_3.push_back(factorial(cnt));
-    }
+    size_t idx = 0;
+    while(test_3.set(idx++, factorial(idx)))
+    {}
 
     //    - вывод на экран всех значений хранящихся в контейнере
-    test_3.printAllElems(); // ERROR...
+    test_3.printAllElems();
 
 
 
