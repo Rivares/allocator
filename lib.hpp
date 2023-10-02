@@ -264,9 +264,38 @@ public:
 //        std::cout << "Alloc Data B: " << &(*data) << " Alloc Data B: " << &(*(data + capacity)) << "\n";
     }
     better_container(const better_container& other) noexcept
-    {}
+    {
+        if (capacity != other.getCapacity())
+        {
+            throw std::out_of_range("better_container<T>::capacity != other.capacity : index is out of range");
+        }
+
+        size_t idx = 0;
+        while (idx < capacity)
+        {
+            setValue(idx, other.getValue(idx));
+            ++idx;
+        }
+    }
     ~better_container() noexcept
     {
+    }
+
+    better_container& operator = (const better_container& other)
+    {
+        if (capacity != other.getCapacity())
+        {
+            throw std::out_of_range("better_container<T>::capacity != other.capacity : index is out of range");
+        }
+
+        size_t idx = 0;
+        while (idx < capacity)
+        {
+            setValue(idx, other.getValue(idx));
+            ++idx;
+        }
+
+        return *this;
     }
 
     bool set(size_t idx, const_reference item)
@@ -289,11 +318,44 @@ public:
         return true;
     }
 
+    int getCapacity() const
+    {
+        return capacity;
+    }
+
+    bool setValue(size_t idx, const_reference item)
+    {
+        if (idx >= capacity)
+        {
+            throw std::out_of_range("better_container<T>::setValue() : index is out of range");
+            return false;
+        }
+
+        typename Allocator_2::template rebind<T>::other allocBlock;
+        allocBlock.construct(m_data + idx, item);
+
+//        std::cout << "Address: " << &(*(data + idx)) << " Data: " << *(data + idx) << "\n";
+
+        return true;
+    }
+
+    value_type getValue(size_t idx) const
+    {
+        if (idx >= capacity)
+        {
+            throw std::out_of_range("better_container<T>::getValue() : index is out of range");
+        }
+
+//        std::cout << "Address: " << &(*(data + idx)) << " Data: " << *(data + idx) << "\n";
+
+        return *(m_data + idx);
+    }
+
     void printAllElems() const
     {
         for (std::size_t i = 0; i < m_size; ++i)
         {
-            std::cout << *(m_data + i) << "\n";
+            std::cout << getValue(i) << "\n";
         }
     }
 

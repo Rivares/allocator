@@ -48,12 +48,15 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[])
     cnt = 15;
     while (cnt-- > 0)
     {
-        test_1[cnt] = factorial(cnt);
+        test_2[cnt] = factorial(cnt);
     }
 
     //    - вывод на экран всех значений (ключ и значение разделены пробелом) хранящихся в контейнере
-    for (const auto& item : test_1)
+    for (const auto& item : test_2)
     {   std::cout << item.first << " " << item.second << "\n";  }
+
+
+
 
 
     std::cout << "\n\nbetter_container<Allocator_2>\n";
@@ -69,6 +72,20 @@ int main([[maybe_unused]] int argc, [[maybe_unused]] char *argv[])
     test_3.printAllElems();
 
 
+
+
+    std::cout << "\n\nCopy better_container<Allocator_2>\n";
+    //    - создание экземпляра своего контейнера для хранения значений типа int
+    better_container<int, 10, std::less<int>, Allocator_2<int>> test_4;
+
+    //    - заполнение 10 элементами от 0 до 9
+    idx = 0;
+    while(test_4.set(idx++, factorial(9-idx)))
+    {}
+
+
+    test_3 = test_4;
+    test_3.printAllElems();
 
     return 0;
 }
